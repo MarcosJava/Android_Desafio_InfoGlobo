@@ -14,8 +14,10 @@
     tools:context="br.com.mfelipesp.desafioinfoglobo.DetalheFilmeActivity"
     tools:showIn="@layout/activity_detalhe_filme">
 
+
+
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -35,39 +37,47 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/ano"
-                android:text="2014"/>
+                android:textSize="12pt"
+                android:textStyle="bold"
+                android:text="@string/ano_exemplo"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/nome"
-                android:text="X-Men o filme"/>
+                android:textSize="6pt"
+                android:text="@string/nome_exemplo"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/genero"
-                android:text="Ação"/>
+                android:textSize="6pt"
+                android:text="@string/genero_exemplo"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/duracao"
-                android:text="120 min"/>
+                android:textSize="6pt"
+                android:text="@string/duracao_exemplo"/>
 
             <TextView
+                android:textSize="6pt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/pais"
-                android:text="Brasil"/>
+                android:text="@string/pais_exemplo"/>
 
             <RatingBar
                 android:id="@+id/classificacao"
+                style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:numStars="5"
                 android:stepSize="1.0"
-                android:rating="2.0" />
+                android:rating="2.0"
+                android:scrollbarSize="5dp"/>
 
 
         </LinearLayout>
@@ -76,9 +86,12 @@
     <!-- Fim do Linear Layout da Imagem -->
 
     <TextView
+        android:paddingTop="75dp"
+        android:textSize="6pt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/descricao"
+        android:gravity="center"
         android:text="O filme tem um monte de superherois"/>
 
 

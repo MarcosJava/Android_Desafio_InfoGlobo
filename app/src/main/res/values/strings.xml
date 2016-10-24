@@ -3,4 +3,12 @@
     <string name="titulo_detalhe">Detalhes</string>
     <string name="titulo_lista">PopMovies</string>
     <string name="reload">Reload</string>
+    <string name="pais_exemplo">Brazil</string>
+    <string name="duracao_exemplo">120 min</string>
+    <string name="genero_exemplo">Ação</string>
+    <string name="nome_exemplo">X-Men o filme</string>
+    <string name="ano_exemplo">2014</string>
+    <string name="titulo_exemplo">Titulo</string>
+
+
 </resources>

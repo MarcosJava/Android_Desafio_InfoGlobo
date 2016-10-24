@@ -57,14 +57,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         this.swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                initListView();
-            }
-        });
-
 
         initListView();
 
@@ -209,10 +201,12 @@ public class MainActivity extends AppCompatActivity
 
 
     /***
-     * Realiza o Swipe
+     * Realiza o Swipe Down para atualizacao
      */
     @Override
     public void onRefresh() {
+        this.swipeRefreshLayout.setRefreshing(true);
         initListView();
+        this.swipeRefreshLayout.setRefreshing(false);
     }
 }

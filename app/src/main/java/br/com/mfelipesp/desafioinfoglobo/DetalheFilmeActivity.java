@@ -64,7 +64,7 @@ public class DetalheFilmeActivity extends AppCompatActivity {
      * @param filme
      */
     private void popularView(Filme filme) {
-        filmeManager.updateImageView(filme.getUrlFoto(), TamanhoImagem.PEQUENA, imageView);
+        filmeManager.updateImageView(filme.getUrlFoto(), TamanhoImagem.GRANDE, imageView);
 
         if (!isNullOrVazio(filme.getNome())){
             txtNome.setText(filme.getNome());
@@ -90,6 +90,8 @@ public class DetalheFilmeActivity extends AppCompatActivity {
             float classificacao = converteEmString(filme.getClassificacao());
             rbClassificacao.setRating(classificacao);
         }
+
+
     }
 
     /***
