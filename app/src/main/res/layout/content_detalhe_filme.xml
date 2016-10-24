@@ -14,12 +14,72 @@
     tools:context="br.com.mfelipesp.desafioinfoglobo.DetalheFilmeActivity"
     tools:showIn="@layout/activity_detalhe_filme">
 
-
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/opening"
-        android:src="@mipmap/ic_launcher"/>
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opening"
+            android:src="@mipmap/ic_launcher"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ano"
+                android:text="2014"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/nome"
+                android:text="X-Men o filme"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/genero"
+                android:text="Ação"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/duracao"
+                android:text="120 min"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pais"
+                android:text="Brasil"/>
+
+            <RatingBar
+                android:id="@+id/classificacao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1.0"
+                android:rating="2.0" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- Fim do Linear Layout da Imagem -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/descricao"
+        android:text="O filme tem um monte de superherois"/>
 
 
 </LinearLayout>

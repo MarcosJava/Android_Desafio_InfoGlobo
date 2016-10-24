@@ -27,12 +27,10 @@ import br.com.mfelipesp.desafioinfoglobo.service.TheMovieServiceImpl;
 
 public class FilmeManagerImpl implements FilmeManager{
 
-    private Context context;
 
     private TheMovieService movieService;
 
-    public FilmeManagerImpl(Context context, TheMovieService movieService) {
-        this.context = context;
+    public FilmeManagerImpl(TheMovieService movieService) {
         this.movieService = movieService;
     }
 
@@ -96,8 +94,6 @@ public class FilmeManagerImpl implements FilmeManager{
 
                     filme.setGenero(concatenaGenero(informationDTO.getGenres()));
                     filme.setPais(informationDTO.getProductionCountries().get(0).getName());
-
-                    filme.setFoto(getImagemCache(filme, TamanhoImagem.GRANDE));
 
                     filmes.add(filme);
                 }

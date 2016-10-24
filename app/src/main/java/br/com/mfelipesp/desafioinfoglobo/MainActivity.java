@@ -3,18 +3,16 @@ package br.com.mfelipesp.desafioinfoglobo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +39,14 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        toolbar.setVisibility(View.INVISIBLE);
+        appBarLayout.setVisibility(View.INVISIBLE);
 
-        //iniciaProgress();
-
-        filmeManager = new FilmeManagerImpl(this, new TheMovieServiceImpl());
+        filmeManager = new FilmeManagerImpl(new TheMovieServiceImpl());
 
         // Get listView
         listView = (ListView) findViewById(R.id.listView);
@@ -55,12 +54,16 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
         imageView = (ImageView) findViewById(R.id.opening);
         listView.setVisibility(View.INVISIBLE);
 
-        //cancelaProgress();
+        initListView();
+
+
+
+        toolbar.setVisibility(View.VISIBLE);
+        appBarLayout.setVisibility(View.VISIBLE);
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void initListView (){
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -69,6 +72,11 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
                 reloadTableView();
             }
         }, 3000);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     /***
@@ -82,6 +90,8 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
         }
         return  null;
     }
+
+
 
     /***
      * Esculta o tap (clique) realizado em cima da foto.
@@ -117,14 +127,17 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                carregaLista();
+                postReloadTableView();
                 cancelaProgress();
             }
         }, 2000);
 
     }
 
-    public void carregaLista(){
+    /***
+     * Acoes realizadas depois que consulta e monta a tableView
+     */
+    public void postReloadTableView(){
         filmes = getListFilme();
         filmes = (filmes == null) ? new ArrayList<Filme>() : filmes;
 
@@ -139,6 +152,9 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
         imageView.setVisibility(View.GONE);
     }
 
+    /***
+     * Incia o loading da ListView
+     */
     private void iniciaProgress(){
         boolean podeCancelar = true;
         boolean indeterminado = true;
@@ -147,6 +163,9 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
 
     }
 
+    /***
+     * Cancela o loadind da ListView
+     */
     private void cancelaProgress(){
         progress.hide();
     }

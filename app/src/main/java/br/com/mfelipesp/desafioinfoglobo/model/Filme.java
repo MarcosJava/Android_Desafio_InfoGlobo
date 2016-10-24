@@ -18,7 +18,6 @@ public class Filme implements Parcelable {
     private String pais;
     private String classificacao;
     private String urlFoto;
-    private Bitmap foto;
 
     public Filme(){
 
@@ -85,13 +84,6 @@ public class Filme implements Parcelable {
         this.classificacao = classificacao;
     }
 
-    public Bitmap getFoto() {
-        return foto;
-    }
-
-    public void setFoto(Bitmap foto) {
-        this.foto = foto;
-    }
 
     @Override
     public String toString() {

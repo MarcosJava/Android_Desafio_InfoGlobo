@@ -10,10 +10,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--@style/AppTheme.NoActionBar"-->
+        <!-- "@style/AppTheme" -->
         <activity
             android:name=".MainActivity"
-            android:label="@string/titulo_lista"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/titulo_lista">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
