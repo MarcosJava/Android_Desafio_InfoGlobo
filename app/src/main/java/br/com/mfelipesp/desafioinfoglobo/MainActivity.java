@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +24,8 @@ import br.com.mfelipesp.desafioinfoglobo.manager.FilmeManagerImpl;
 import br.com.mfelipesp.desafioinfoglobo.model.Filme;
 import br.com.mfelipesp.desafioinfoglobo.service.TheMovieServiceImpl;
 
-public class MainActivity extends AppCompatActivity  implements ListView.OnItemClickListener{
+public class MainActivity extends AppCompatActivity
+        implements ListView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     public final static String EXTRA_FILME = "filme";
 
@@ -33,33 +35,38 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
     private ListView listView;
     private ImageView imageView;
     private ProgressDialog progress;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        toolbar.setVisibility(View.INVISIBLE);
-        appBarLayout.setVisibility(View.INVISIBLE);
-
         filmeManager = new FilmeManagerImpl(new TheMovieServiceImpl());
 
-        // Get listView
-        listView = (ListView) findViewById(R.id.listView);
+        /***
+         * addViews
+         */
+        this.swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        this.listView = (ListView) findViewById(R.id.listView);
+        this.imageView = (ImageView) findViewById(R.id.opening);
+        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        imageView = (ImageView) findViewById(R.id.opening);
-        listView.setVisibility(View.INVISIBLE);
+
+        setSupportActionBar(toolbar);
+
+        this.swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+                initListView();
+            }
+        });
+
 
         initListView();
-
-
-
-        toolbar.setVisibility(View.VISIBLE);
-        appBarLayout.setVisibility(View.VISIBLE);
 
     }
 
@@ -198,5 +205,14 @@ public class MainActivity extends AppCompatActivity  implements ListView.OnItemC
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /***
+     * Realiza o Swipe
+     */
+    @Override
+    public void onRefresh() {
+        initListView();
     }
 }

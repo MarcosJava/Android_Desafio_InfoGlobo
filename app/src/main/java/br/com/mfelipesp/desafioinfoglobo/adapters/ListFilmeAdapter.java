@@ -22,9 +22,12 @@ public class ListFilmeAdapter extends ArrayAdapter<Filme> {
 
     private List<Filme> filmes;
     private FilmeManager filmeManager;
+    private LayoutInflater layoutInflater;
+    private Context context;
 
     public ListFilmeAdapter(Context context, int textViewResourceId, List<Filme> objects, FilmeManager filmeManager) {
         super(context, textViewResourceId, objects);
+        this.context = context;
         this.filmes = objects;
         this.filmeManager = filmeManager;
     }
@@ -35,13 +38,26 @@ public class ListFilmeAdapter extends ArrayAdapter<Filme> {
     }
 
     @Override
+    public int getCount() {
+        return filmes.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Create viewHolder
         ViewHolder viewHolder = null;
         Filme filmeItem = this.getItem(position);
 
-        LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if(this.layoutInflater == null){
+            this.layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        
 
         // Case by exists layout
         if (convertView == null) {
