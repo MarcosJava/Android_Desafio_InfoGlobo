@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +95,10 @@ public class FilmeManagerImpl implements FilmeManager{
 
                     filme.setGenero(concatenaGenero(informationDTO.getGenres()));
                     filme.setPais(informationDTO.getProductionCountries().get(0).getName());
+
+
+                    String []data = resultado.getReleaseDate().split("-");
+                    filme.setAno(data[0]);
 
                     filmes.add(filme);
                 }

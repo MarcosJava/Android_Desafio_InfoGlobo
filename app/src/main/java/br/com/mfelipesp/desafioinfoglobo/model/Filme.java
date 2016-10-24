@@ -18,6 +18,7 @@ public class Filme implements Parcelable {
     private String pais;
     private String classificacao;
     private String urlFoto;
+    private String ano;
 
     public Filme(){
 
@@ -84,6 +85,13 @@ public class Filme implements Parcelable {
         this.classificacao = classificacao;
     }
 
+    public String getAno() {
+        return ano;
+    }
+
+    public void setAno(String ano) {
+        this.ano = ano;
+    }
 
     @Override
     public String toString() {
@@ -95,6 +103,7 @@ public class Filme implements Parcelable {
                 ", pais='" + pais + '\'' +
                 ", classificacao='" + classificacao + '\'' +
                 ", urlFoto='" + urlFoto + '\'' +
+                ", ano='" + ano + '\'' +
                 '}';
     }
 
@@ -117,6 +126,7 @@ public class Filme implements Parcelable {
         dest.writeString(this.pais);
         dest.writeString(this.classificacao);
         dest.writeString(this.urlFoto);
+        dest.writeString(this.ano);
 
     }
 
@@ -128,6 +138,7 @@ public class Filme implements Parcelable {
         this.pais = in.readString();
         this.classificacao = in.readString();
         this.urlFoto = in.readString();
+        this.ano = in.readString();
     }
 
     /****

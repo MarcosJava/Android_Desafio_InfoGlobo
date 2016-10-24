@@ -91,6 +91,9 @@ public class DetalheFilmeActivity extends AppCompatActivity {
             rbClassificacao.setRating(classificacao);
         }
 
+        if(!isNullOrVazio(filme.getAno())){
+            txtAno.setText(filme.getAno());
+        }
 
     }
 
