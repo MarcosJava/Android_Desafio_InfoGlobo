@@ -3,37 +3,46 @@ package br.com.mfelipesp.desafioinfoglobo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.mfelipesp.desafioinfoglobo.adapters.ListFilmeAdapter;
+import br.com.mfelipesp.desafioinfoglobo.adapters.RecyclerFilmeAdapter;
+import br.com.mfelipesp.desafioinfoglobo.adapters.RecyclerFilmesHolders;
 import br.com.mfelipesp.desafioinfoglobo.manager.FilmeManager;
 import br.com.mfelipesp.desafioinfoglobo.manager.FilmeManagerImpl;
 import br.com.mfelipesp.desafioinfoglobo.model.Filme;
 import br.com.mfelipesp.desafioinfoglobo.service.TheMovieServiceImpl;
 
 public class MainActivity extends AppCompatActivity
-        implements ListView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+        implements SwipeRefreshLayout.OnRefreshListener {
 
     public final static String EXTRA_FILME = "filme";
 
     private FilmeManager filmeManager;
     private List<Filme> filmes;
 
-    private ListView listView;
+    //private ListView listView;
     private ImageView imageView;
+    private RecyclerView recyclerView;
+    private GridLayoutManager gridLayout;
     private ProgressDialog progress;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Toolbar toolbar;
@@ -44,25 +53,27 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         filmeManager = new FilmeManagerImpl(new TheMovieServiceImpl());
-
-        /***
-         * addViews
-         */
-        this.swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        this.listView = (ListView) findViewById(R.id.listView);
-        this.imageView = (ImageView) findViewById(R.id.opening);
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        addItemOnView();
 
         setSupportActionBar(toolbar);
-
         this.swipeRefreshLayout.setOnRefreshListener(this);
 
-        initListView();
+
+        filmes = getListFilme();
+        initImagem();
 
     }
 
-    private void initListView (){
+    private void addItemOnView() {
+        this.swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        //this.listView = (ListView) findViewById(R.id.listView);
+        this.recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        this.imageView = (ImageView) findViewById(R.id.opening);
+        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+    }
+
+
+    private void initImagem (){
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -71,6 +82,24 @@ public class MainActivity extends AppCompatActivity
                 reloadTableView();
             }
         }, 3000);
+    }
+
+
+    /***
+     * Realiza as consultas para montar a tableView
+     */
+    public void reloadTableView() {
+
+        iniciaProgress();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                settingRecyclerFilmes();
+                cancelaProgress();
+            }
+        }, 3000);
+
     }
 
     @Override
@@ -91,63 +120,36 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-    /***
-     * Esculta o tap (clique) realizado em cima da foto.
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        goDetalheFilmeActivity(filmes.get(position));
-
-    }
-
     /***
      * Inicia a Activity de Detalhe de Filme passando um Extra de dados.
      * @param filme
      */
-    private void goDetalheFilmeActivity(Filme filme) {
-        Intent it = new Intent(this, DetalheFilmeActivity.class);
-        it.putExtra(EXTRA_FILME, filme);
-        startActivity(it);
-    }
 
 
-    /***
-     * Realiza as consultas para montar a tableView
-     */
-    public void reloadTableView() {
 
-        iniciaProgress();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                postReloadTableView();
-                cancelaProgress();
-            }
-        }, 2000);
 
-    }
 
     /***
      * Acoes realizadas depois que consulta e monta a tableView
      */
-    public void postReloadTableView(){
-        filmes = getListFilme();
-        filmes = (filmes == null) ? new ArrayList<Filme>() : filmes;
+    public void settingRecyclerFilmes(){
 
-        ListFilmeAdapter filmesAdapter =
-                new ListFilmeAdapter(this, android.R.layout.simple_list_item_2, filmes, filmeManager);
+        if (filmes == null) {
+            filmes = getListFilme();
+        }
 
+        if(filmes.isEmpty()){
+            filmes = new ArrayList<>();
+        }
 
-        listView.setAdapter(filmesAdapter);
-        listView.setOnItemClickListener(this);
+        //LinearLayoutManager , StaggeredGridLayoutManager , GridLayoutManager
+        gridLayout = new GridLayoutManager(MainActivity.this, 3);
 
-        listView.setVisibility(View.VISIBLE);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(gridLayout);
+        recyclerView.setAdapter(new RecyclerFilmeAdapter(this, filmes));
+
+        recyclerView.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.GONE);
     }
 
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRefresh() {
         this.swipeRefreshLayout.setRefreshing(true);
-        initListView();
+        reloadTableView();
         this.swipeRefreshLayout.setRefreshing(false);
     }
 }

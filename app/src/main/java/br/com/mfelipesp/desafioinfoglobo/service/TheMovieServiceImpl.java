@@ -26,7 +26,9 @@ public class TheMovieServiceImpl implements TheMovieService{
     @Override
     public String getJsonPopular() {
         try {
-            return new PopularTheMovie().execute(URL).get();
+            String retorno = new PopularTheMovie().execute(URL).get();
+            Log.i("getJsonPopular()", retorno);
+            return retorno;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
@@ -78,7 +80,9 @@ public class TheMovieServiceImpl implements TheMovieService{
 
         String url = "https://api.themoviedb.org/3/movie/" + idPopular + "?api_key=29071fdc23e0c8789241655254da5d2b";
         try {
-            return new InformationTheMovie().execute(url).get();
+            String retorno = new InformationTheMovie().execute(url).get();
+            Log.i("getInformacaoDoPopular", retorno);
+            return retorno;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
@@ -110,10 +114,6 @@ public class TheMovieServiceImpl implements TheMovieService{
                 e.printStackTrace();
             }
             return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            //bmImage.setImageBitmap(result);
         }
     }
 

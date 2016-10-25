@@ -27,10 +27,7 @@ public class FilmeManagerTest {
 
     @Test
     public void validarManager(){
-
         assertEquals(4, 2 + 2);
-
-
     }
 
 

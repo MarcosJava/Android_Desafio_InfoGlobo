@@ -33,6 +33,12 @@ public interface FilmeManager {
     public Bitmap getImagemCache(Filme filme, TamanhoImagem tamanhoImagem);
 
 
+    /***
+     * Realiza o loading da Imagem em Carregamento.
+     * @param urlFoto
+     * @param valor
+     * @param imageView
+     */
     void updateImageView(String urlFoto, TamanhoImagem valor, ImageView imageView);
 
 
