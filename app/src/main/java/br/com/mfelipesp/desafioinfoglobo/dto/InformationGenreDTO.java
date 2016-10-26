@@ -11,6 +11,11 @@ public class InformationGenreDTO {
     public InformationGenreDTO() {
     }
 
+    public InformationGenreDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

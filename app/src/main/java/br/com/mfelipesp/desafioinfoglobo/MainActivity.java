@@ -1,7 +1,10 @@
 package br.com.mfelipesp.desafioinfoglobo;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity
         this.swipeRefreshLayout.setOnRefreshListener(this);
 
 
-        filmes = getListFilme();
+        //filmes = getListFilme();
         initImagem();
 
     }
@@ -84,28 +87,41 @@ public class MainActivity extends AppCompatActivity
         }, 3000);
     }
 
+    /***
+     * Verifica se contem acesso a internet
+     * @return
+     */
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        netInfo.isRoaming();
+        netInfo.isConnectedOrConnecting();
+        return netInfo != null && netInfo.isConnected();
+    }
+
 
     /***
      * Realiza as consultas para montar a tableView
      */
     public void reloadTableView() {
 
-        iniciaProgress();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                settingRecyclerFilmes();
-                cancelaProgress();
-            }
-        }, 3000);
+        if(isNetworkConnected()){
+            //this.swipeRefreshLayout.setRefreshing(true);
+            iniciaProgress();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    settingRecyclerFilmes();
+                    //swipeRefreshLayout.setRefreshing(false);
+                    cancelaProgress();
 
+                }
+            }, 1000);
+        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     /***
      * Retorna uma Lista de Filme pela manager.
@@ -121,20 +137,11 @@ public class MainActivity extends AppCompatActivity
 
 
     /***
-     * Inicia a Activity de Detalhe de Filme passando um Extra de dados.
-     * @param filme
-     */
-
-
-
-
-
-    /***
      * Acoes realizadas depois que consulta e monta a tableView
      */
     public void settingRecyclerFilmes(){
 
-        if (filmes == null) {
+        if (filmes == null || filmes.isEmpty()) {
             filmes = getListFilme();
         }
 
@@ -160,7 +167,8 @@ public class MainActivity extends AppCompatActivity
         boolean podeCancelar = true;
         boolean indeterminado = true;
         String titulo = "Aguarde carregando lista";
-        progress = ProgressDialog.show(this, titulo, null, indeterminado, podeCancelar);
+        String mensagem = "Nao travamos, aguarde !";
+        progress = ProgressDialog.show(this, titulo, mensagem, indeterminado, podeCancelar);
 
     }
 
@@ -193,9 +201,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.reload) {
-            iniciaProgress();
+            this.filmes = null;
             reloadTableView();
-            cancelaProgress();
         }
 
         return super.onOptionsItemSelected(item);
@@ -207,6 +214,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onRefresh() {
+        this.filmes = null;
         this.swipeRefreshLayout.setRefreshing(true);
         reloadTableView();
         this.swipeRefreshLayout.setRefreshing(false);

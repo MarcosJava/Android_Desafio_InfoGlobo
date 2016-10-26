@@ -59,7 +59,13 @@ public class FilmeManagerImpl implements FilmeManager{
 
     @Override
     public Bitmap getImagemCache(Filme filme, TamanhoImagem tamanhoImagem) {
-        return this.movieService.getImagemPelaUrlETamanho(filme.getUrlFoto(), tamanhoImagem.getValor());
+
+        if(filme != null && filme.getUrlFoto() != null && !filme.getUrlFoto().isEmpty()){
+            return this.movieService.getImagemPelaUrlETamanho(filme.getUrlFoto(), tamanhoImagem.getValor());
+        } else {
+            return null;
+        }
+
 
     }
 
@@ -73,45 +79,84 @@ public class FilmeManagerImpl implements FilmeManager{
 
         if(responseFilmeDTO.getResults() != null && !responseFilmeDTO.getResults().isEmpty()){
 
-            try{
-                List<Filme> filmes = new ArrayList<>();
+            List<Filme> filmes = new ArrayList<>();
 
-                for(ResultFilmeDTO resultado: responseFilmeDTO.getResults()) {
+            for(ResultFilmeDTO resultado: responseFilmeDTO.getResults()) {
 
+                if(resultado != null) {
                     Filme filme = new Filme();
-                    filme.setNome(resultado.getTitle());
-                    filme.setClassificacao(String.valueOf(resultado.getVoteAverage().intValue()));
-                    filme.setSinopse(resultado.getOverview());
-                    filme.setUrlFoto(resultado.getPostPath());
 
+                    validaResultado(filme, resultado);
                     //Recupera o ID
                     String id = String.valueOf(resultado.getId());
 
+                    //Json do Response Information
+                    String jsonResponseInformation = getJsonDoServicoInformation(id);
+
                     //Recupera a Informacao pelo ID
                     ResponseInformationDTO informationDTO =
-                            new Gson().fromJson(getJsonDoServicoInformation(id), ResponseInformationDTO.class);
+                            new Gson().fromJson(jsonResponseInformation , ResponseInformationDTO.class);
 
-                    filme.setDuracao(informationDTO.getRuntime().toString());
-
-                    filme.setGenero(concatenaGenero(informationDTO.getGenres()));
-                    filme.setPais(informationDTO.getProductionCountries().get(0).getName());
-
-
-                    String []data = resultado.getReleaseDate().split("-");
-                    filme.setAno(data[0]);
+                    if(informationDTO != null){
+                        validaInformation(filme, informationDTO);
+                    }
 
                     filmes.add(filme);
                 }
-
-                return  filmes;
-            }catch (Exception e){
-                e.printStackTrace();
-                return  null;
             }
-        } else {
-
-            return null;
+            return  filmes;
         }
+        return null;
+    }
+
+    private void validaInformation(Filme filme, ResponseInformationDTO informationDTO) {
+
+        if(informationDTO.getRuntime() != null){
+            filme.setDuracao(informationDTO.getRuntime().toString());
+        }
+
+        if (informationDTO.getGenres() != null
+                && !informationDTO.getGenres().isEmpty()){
+            filme.setGenero(concatenaGenero(informationDTO.getGenres()));
+        }
+
+        if (informationDTO.getProductionCountries() != null
+                && !informationDTO.getProductionCountries().isEmpty()){
+            filme.setPais(informationDTO.getProductionCountries().get(0).getName());
+        }
+
+    }
+
+    private void validaResultado(Filme filme, ResultFilmeDTO resultado) {
+
+        if(resultado.getTitle() != null && !resultado.getTitle().isEmpty()){
+            filme.setNome(resultado.getTitle());
+
+        }
+
+        if(resultado.getVoteAverage() != null &&
+                !resultado.getVoteAverage().isNaN()){
+            filme.setClassificacao(String.valueOf(resultado.getVoteAverage().intValue()));
+        }
+
+        if(resultado.getOverview() != null &&
+                !resultado.getOverview().isEmpty()){
+            filme.setSinopse(resultado.getOverview());
+        }
+        if (resultado.getPostPath() != null &&
+                !resultado.getPostPath().isEmpty()) {
+            filme.setUrlFoto(resultado.getPostPath());
+        }
+
+        if (resultado.getReleaseDate() != null &&
+                !resultado.getReleaseDate().isEmpty()){
+
+            String []data = resultado.getReleaseDate().split("-");
+            if(!data[0].isEmpty())
+                filme.setAno(data[0]);
+        }
+
+
     }
 
     @NonNull
@@ -126,40 +171,30 @@ public class FilmeManagerImpl implements FilmeManager{
 
     @Nullable
     private String getJsonDoServicoPopular(){
-        try {
-            String retorno = "";
-            retorno = this.movieService.getJsonPopular();
 
-            if(retorno != null && !retorno.isEmpty()){
-                return retorno;
-            } else {
-                retorno = "";
-            }
+        String retorno = "";
+        retorno = this.movieService.getJsonPopular();
 
+        if(retorno != null && !retorno.isEmpty()){
             return retorno;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
+
+        return retorno;
     }
 
     @Nullable
     private String getJsonDoServicoInformation(String id){
-        try {
-            String retorno = "";
-            retorno = this.movieService.getInformacaoDoPopular(id);
 
-            if(retorno != null && !retorno.isEmpty()){
-                return retorno;
-            } else {
-                retorno = "";
-            }
+        String retorno = "";
+        retorno = this.movieService.getInformacaoDoPopular(id);
 
+        if(retorno != null && !retorno.isEmpty()){
             return retorno;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } else {
+            retorno = "";
         }
+
+        return retorno;
     }
 
 
